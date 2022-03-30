@@ -21,7 +21,7 @@ Le schéma d'architecture ci-après présente l'approche globable d'architecture
 # 2. Architecture technique détaillée
 # 3. Création des services Event Hub et Azure Stream Analytics puis liaison des services
 # 4. Développement du générateur et envoie de données du générateur vers le service Event Hub 
-# 5. Mise en place d’une Azure Cosmos DB / Liaison avec Stream Analytics / Test / Création d’un historique de données
+# 5. Mise en place d’une Azure Cosmos DB puis liaison avec Stream Analytics et Création d’un historique de données
 # 6. Développement de l’algorithme de ML avec Spark et enregistrement du modèle sous Azure ML
 # 7. Déploiement du modèle dans un conteneur Azure Kubernetes
 # 8. Mise en place d’un Event Hub / Azure Stream Analytics / Azure Cosmos DB pour l’architecture finale en temps réel
