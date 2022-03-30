@@ -2,7 +2,7 @@
 
 ## Contenu
 - [Introduction à l'architecture et approche globale](https://github.com/Katalyse/Real-Time-Project-Azure/blob/main/README.md#1-introduction-%C3%A0-larchitecture-et-approche-globale);
-- [Architecture technique détaillée](https://github.com/Katalyse/Real-Time-Project-Azure);
+- [Architecture technique détaillée](https://github.com/Katalyse/Real-Time-Project-Azure/blob/main/README.md#2-architecture-technique-détaillée);
 - [Création des services Event Hub et Azure Stream Analytics puis liaison des services](https://github.com/Katalyse/Real-Time-Project-Azure);
 - [Développement du générateur et envoie de données du générateur vers le service Event Hub ](https://github.com/Katalyse/Real-Time-Project-Azure);
 - [Mise en place d’une Azure Cosmos DB / Liaison avec Stream Analytics / Test / Création d’un historique de données](https://github.com/Katalyse/Real-Time-Project-Azure);
