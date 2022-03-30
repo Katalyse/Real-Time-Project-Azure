@@ -13,8 +13,11 @@
 - [Création et intégration des deux dashboards Power BI](https://github.com/Katalyse/Real-Time-Project-Azure);
 
 
-
 # 1. Introduction à l'architecture et approche globale
+
+Le schéma d'architecture ci-après présente l'approche globable d'architecture.
+![](/Pictures/archi.jpeg?raw=true)
+
 # 2. Architecture technique détaillée
 # 3. Création des services Event Hub et Azure Stream Analytics puis liaison des services
 # 4. Développement du générateur et envoie de données du générateur vers le service Event Hub 
