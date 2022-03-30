@@ -36,7 +36,7 @@ Le générateur va envoyer un certain nombre de données vers le service Event H
 </p>
 
 <p align="justify">
-La première partie de l'architecture sert à créer un historique de données pour développer l'algorithme de ML. La deuxième est celle utilisée en condition réelle. Des données sont reçues avec un flux et un volume aléatoire. Nous devons déterminer si ces données décrivent une transaction frauduleuse ou non. Il faut aussi stocker ces données pour les conserver et les restituer. Voyons maintenant étape par étape la consstruction de cette architecture.
+La première partie de l'architecture sert à créer un historique de données pour développer l'algorithme de ML. La deuxième est celle utilisée en condition réelle. Des données sont reçues aléatoirement dans le temps. Nous devons déterminer si ces données décrivent une transaction frauduleuse ou non. Il faut aussi stocker ces données pour les conserver et les restituer. Voyons maintenant étape par étape la construction de cette architecture.
 </p>
 
 # 3. Création des services Event Hub et Azure Stream Analytics puis liaison des services
