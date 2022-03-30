@@ -114,19 +114,20 @@ Notre conteneur AKS parvient à scorer correctement les données. Maintenant qu�
 Au niveau du service Azure Stream Analytics, on crée une nouvelle fonction de type Azure ML Service. On choisit un nom pour cette nouvelle fonction et on précise l’espace de travail Azure ML avec lequel on a déployé notre conteneur AKS. Azure Stream va automatiquement trouver les points de terminaison disponible et va générer la signature de fonction de manière automatique grâce aux exemples que l’on a fourni dans le script de scroing. On peut ensuite enregistrer la fonction.
 </p>
 
-![](/Pictures/Image1.png =100x20)
+<img src="./Pictures/Image1.png" alt="drawing" width="200" height="200"/>
+
 
 <p align="justify">
 Voici notre fonction prédiction. Il ne manque plus qu’à utiser cette fonction dans la requête SQL d’Azure Stream Analytics.
 </p>
 
-![](/Pictures/Image2.png =100x20)
+<img src="./Pictures/Image2.png" alt="drawing" width="200" height="200"/>
 
 <p align="justify">
 Les données à scorer proviennnet du service Event Hub et nous voulons envoyer les données scorées vers un service Power BI en temps réel et un stockage Azure Cosmos DB. Dans la prmière partie de cette requête nous créons une variable nommée Dataframe à partir de la source de données en entrée. Ce dataframe contient exactement les mêmes colonnes avec les mêmes noms et le même ordre que l’exemple que nous avons specifié dans le script de scoring. Dans la suite nous appelons la fonction prediction en transmettant le Dataframe en paramètre de cette fonction. Nous redirigeons les résultats vers nos deux sorties.
 </p>
 
-![](/Pictures/Image3.png =100x20)
+<img src="./Pictures/Image3.png" alt="drawing" width="200" height="200"/>
 
 <p align="justify">
 La fonctionnalité de scoring d’un algorithme de Machine Learning au sein d’Azure Stream Analytics est maintenant mise en place. Nous pouvons envoyer des données vers ce service qui va automatiquement appeler le conteneur AKS contenant l’algorithme de ML et envoyer les données scorées vers les services spécifiés en sortie.
