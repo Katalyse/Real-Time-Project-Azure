@@ -16,7 +16,7 @@
 # 1. Introduction à l'architecture et approche globale
 
 Le schéma d'architecture ci-après présente l'approche globable d'architecture.
-![](/Pictures/archi.jpeg?raw=true)
+![](/Pictures/archi.jpg?raw=true)
 
 # 2. Architecture technique détaillée
 # 3. Création des services Event Hub et Azure Stream Analytics puis liaison des services
