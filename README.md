@@ -118,6 +118,8 @@ Notre conteneur AKS parvient à scorer correctement les données. Maintenant qu�
 #...
 ```
 
+# 9. Modification de la requete SQL Stream Analytics pour scorer les données
+
 <p align="justify">
 Au niveau du service Azure Stream Analytics, on crée une nouvelle fonction de type Azure ML Service. On choisit un nom pour cette nouvelle fonction et on précise l’espace de travail Azure ML avec lequel on a déployé notre conteneur AKS. Azure Stream va automatiquement trouver les points de terminaison disponible et va générer la signature de fonction de manière automatique grâce aux exemples que l’on a fourni dans le script de scroing. On peut ensuite enregistrer la fonction.
 </p>
@@ -145,13 +147,5 @@ La fonctionnalité de scoring d’un algorithme de Machine Learning au sein d’
 Notons que les types que nous avons utilisés en entrée et en sortie ne sont pas les seuls. Nous pouvons par exemple transmettre un Dataframe Spark directement en entrée de la fonction run(). Pour cela, il suffit de changer l’exemple de l’input dans le script de scoring. La requête SQL reste inchangée. Nous pouvons aussi récupérer un array numpy en entrée du script. Il faut pour cela changer l’input dans le script de scoring et passer par une fonction UDF javascript au niveau de la requête SQL. Nous avons un exemple disponible à la fin de la page suivante : Intégration d’Azure Stream Analytics avec Azure Machine Learning | Microsoft Docs. Le Dataframe et l’Array sont les deux types les plus couramment utilisés pour transmettre les données depuis Azure Stream Analytics vers le conteneur AKS hébergeant notre modèle. Nous pouvons aussi utiliser un conteneur ACI.
 </p>
 
-
-# 9. Modification de la requete SQL Stream Analytics pour scorer les données
 # 10. Création et intégration des deux dashboards Power BI
-
-
-
-![](/Pictures/iRobotArchitecture.png?raw=true)
-
-
 
