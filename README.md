@@ -67,7 +67,7 @@ from azureml.core.compute import AksCompute
 from azureml.core.model import Model
 
 aks_target = AksCompute(ws, "My-Kub-Inf")
-model1 = ws.models['Fraud_Detect_Model"]
+model1 = ws.models["Fraud_Detect_Model"]
 ```
 
 <p align="justify">
