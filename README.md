@@ -45,41 +45,36 @@ La première partie de l'architecture sert à créer un historique de données p
 
 <img src="./Pictures/capture1.png"/>
 
-# 4. Développement du générateur et envoie de données du générateur vers le service Event Hub
-
-<img src="./Pictures/capture3.png"/>
-
 <img src="./Pictures/capture4.png"/>
 
 <img src="./Pictures/capture5.png"/>
 
 <img src="./Pictures/capture6.png"/>
 
-<img src="./Pictures/capture7.png"/>
+<img src="./Pictures/capture3.png"/>
+
+# 4. Développement du générateur et envoie de données du générateur vers le service Event Hub
+
+# 5. Mise en place d’une Azure Cosmos DB puis liaison avec Stream Analytics et Création d’un historique de données
+
+<img src="./Pictures/capture12.png"/>
 
 <img src="./Pictures/capture8.png"/>
 
 <img src="./Pictures/capture9.png"/>
 
-<img src="./Pictures/capture10.png"/>
+<img src="./Pictures/capture7.png"/>
 
 <img src="./Pictures/capture11.png"/>
-
-<img src="./Pictures/capture12.png"/>
 
 <img src="./Pictures/capture13.png"/>
 
 
-# 5. Mise en place d’une Azure Cosmos DB puis liaison avec Stream Analytics et Création d’un historique de données
 
 
 # 6. Développement de l’algorithme de ML avec Spark et enregistrement du modèle sous Azure ML
 
-
-# 7. Mise en place d’un Event Hub / Azure Stream Analytics / Azure Cosmos DB pour l’architecture finale en temps réel
-
-
-# 8. Déploiement du modèle de ML dans un conteneur Azure Kubernetes
+# 7. Déploiement du modèle de ML dans un conteneur Azure Kubernetes
 
 <p align="justify">
 L'objectif des parties 8 et 9 est de mettre en place une fonctionnalité puissante d’Azure Stream Analytics : le scoring d’algorithmes de Machine Learning. En effet, dans des scénarios avancés d’analyse en temps réel, il est parfois nécessaire de faire appel à un algorithme de machine learning pour scorer des nouvelles données de manière rapide. Azure Stream Analytics est un service qui permet d’ingérer des données en temps réel à partir d’événèments, de transformer ces données et de les rediriger vers une sortie pour du stockage par exemple. L’avantage majeure qu’offre le service Azure Stream Analytics et que l’on peut scorer les données pendant le processus de transformation. Ceci implique que l’on peut scorer des données avant qu’elles soient stockées, ce qui améliore grandement la vitesse de traitement des données et convient donc parfaitement à un scénario d’analyse en temps réel.
@@ -147,7 +142,9 @@ Notre conteneur AKS parvient à scorer correctement les données. Maintenant qu�
 #...
 ```
 
-# 9. Modification de la requete SQL Stream Analytics pour scorer les données
+# 7. Mise en place d’un Event Hub / Azure Stream Analytics / Azure Cosmos DB pour l’architecture finale en temps réel
+
+<img src="./Pictures/capture10.png"/>
 
 <p align="justify">
 Au niveau du service Azure Stream Analytics, on crée une nouvelle fonction de type Azure ML Service. On choisit un nom pour cette nouvelle fonction et on précise l’espace de travail Azure ML avec lequel on a déployé notre conteneur AKS. Azure Stream va automatiquement trouver les points de terminaison disponible et va générer la signature de fonction de manière automatique grâce aux exemples que l’on a fourni dans le script de scroing. On peut ensuite enregistrer la fonction.
