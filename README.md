@@ -9,8 +9,7 @@
 - [Développement de l’algorithme de ML avec Spark et enregistrement du modèle sous Azure ML](https://github.com/Katalyse/Real-Time-Project-Azure/blob/main/README.md#6-d%C3%A9veloppement-de-lalgorithme-de-ml-avec-spark-et-enregistrement-du-mod%C3%A8le-sous-azure-ml)
 - [Mise en place d’un Event Hub / Azure Stream Analytics / Azure Cosmos DB pour l’architecture finale en temps réel](https://github.com/Katalyse/Real-Time-Project-Azure/blob/main/README.md#7-mise-en-place-dun-event-hub--azure-stream-analytics--azure-cosmos-db-pour-larchitecture-finale-en-temps-r%C3%A9el)
 - [Déploiement du modèle de ML dans un conteneur Azure Kubernetes](https://github.com/Katalyse/Real-Time-Project-Azure/blob/main/README.md#8-d%C3%A9ploiement-du-mod%C3%A8le-de-ml-dans-un-conteneur-azure-kubernetes)
-- [Modification de la requete SQL Stream Analytics pour scorer les données](https://github.com/Katalyse/Real-Time-Project-Azure/blob/main/README.md#9-modification-de-la-requete-sql-stream-analytics-pour-scorer-les-donn%C3%A9es)
-- [Création et intégration des deux dashboards Power BI](https://github.com/Katalyse/Real-Time-Project-Azure/blob/main/README.md#10-cr%C3%A9ation-et-int%C3%A9gration-des-deux-dashboards-power-bi)
+- [Création et intégration des deux dashboards Power BI](https://github.com/Katalyse/Real-Time-Project-Azure/blob/main/README.md#9-cr%C3%A9ation-et-int%C3%A9gration-des-deux-dashboards-power-bi)
 
 
 # 1. Introduction à l'architecture et approche globale
