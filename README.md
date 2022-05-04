@@ -68,15 +68,16 @@ La première partie de l'architecture sert à créer un historique de données p
 
 <img src="./Pictures/capture13.png"/>
 
-
-
-
 # 6. Développement de l’algorithme de ML avec Spark et enregistrement du modèle sous Azure ML
+
+<img src="./Pictures/capture16.png"/>
+<img src="./Pictures/capture17.png"/>
+<img src="./Pictures/capture18.png"/>
 
 # 7. Déploiement du modèle de ML dans un conteneur Azure Kubernetes
 
 <p align="justify">
-L'objectif des parties 8 et 9 est de mettre en place une fonctionnalité puissante d’Azure Stream Analytics : le scoring d’algorithmes de Machine Learning. En effet, dans des scénarios avancés d’analyse en temps réel, il est parfois nécessaire de faire appel à un algorithme de machine learning pour scorer des nouvelles données de manière rapide. Azure Stream Analytics est un service qui permet d’ingérer des données en temps réel à partir d’événèments, de transformer ces données et de les rediriger vers une sortie pour du stockage par exemple. L’avantage majeure qu’offre le service Azure Stream Analytics et que l’on peut scorer les données pendant le processus de transformation. Ceci implique que l’on peut scorer des données avant qu’elles soient stockées, ce qui améliore grandement la vitesse de traitement des données et convient donc parfaitement à un scénario d’analyse en temps réel.
+L'objectif des parties 7 et 8 est de mettre en place une fonctionnalité puissante d’Azure Stream Analytics : le scoring d’algorithmes de Machine Learning. En effet, dans des scénarios avancés d’analyse en temps réel, il est parfois nécessaire de faire appel à un algorithme de machine learning pour scorer des nouvelles données de manière rapide. Azure Stream Analytics est un service qui permet d’ingérer des données en temps réel à partir d’événèments, de transformer ces données et de les rediriger vers une sortie pour du stockage par exemple. L’avantage majeure qu’offre le service Azure Stream Analytics et que l’on peut scorer les données pendant le processus de transformation. Ceci implique que l’on peut scorer des données avant qu’elles soient stockées, ce qui améliore grandement la vitesse de traitement des données et convient donc parfaitement à un scénario d’analyse en temps réel.
 </p>
 
 <p align="justify">
