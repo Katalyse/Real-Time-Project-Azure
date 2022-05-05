@@ -150,19 +150,81 @@ Nous avons maintenant effectué la connexion entre le générateur et Cosmos DB 
 Nous pouvons désormais créer notre modèle de Machine Learning visant à prédire si une transaction et frauduleuse ou non. Nous disposons de données labelisées dans Cosmos DB afin d'entrainer l'algorithme. Nous créons un service Azure Synapse Analytics permettant d'accéder à un environnement de travail Spark. Au sein d'Azure Synapse, nous créons un service lié avec Azure Cosmos DB pour avoir facilement l'accès aux données. Nous ouvrons un notebook sur le pool Spark et nous pouvons commencer le développement de l'algorihtme. On commence par importer les données et les afficher.
 </p>
 
-<img src="./Pictures/capture16.png"/>
+```Python
+df = spark.read\
+    .format("cosmos.olap")\
+    .option("spark.synapse.linkedService", "LinkServiceCosmosDB")\
+    .option("spark.cosmos.container", "container-fraud-detection")\
+    .load()
+
+display(df.limit(10))
+```
 
 <p align="justify">
 Après avoir visualiser les données, on crée un pipeline pyspark contenant l'ensemble des étapes de processing des données et le modèle final. On applique un encodage one hot sur une partie des variable, un encodage de type label encoder sur une autre variable, une standardisation des variables continues et nous n'appliquons aucune transformation sur quelques une des variables. C'est un modèle de gradient boosting. On note que l'optimisation de l'algorithme n'est pas une étape primordiale de ce PoC puisque ce sont des données générées artificiellement.
 </p>
 
-<img src="./Pictures/capture17.png"/>
+```Python
+continuous_column = ['amount', 'old_balance', 'income']
+ohe_column = ['month', 'day_of_week', 'category_recipient', 'transaction_method']
+le_column = 'transaction_type'
+other_column = ['credit', 'marital_status', 'children', 'foreign_transaction']
+
+stages = []
+
+indexer = StringIndexer(inputCol=le_column, outputCol= le_column + "_LE")
+stages += [indexer]
+
+for catCol in ohe_column:
+    stringIndexer = StringIndexer(inputCol = catCol, outputCol = catCol + '_LE')
+    encoder = OneHotEncoder(
+        inputCols=[stringIndexer.getOutputCol()], 
+        outputCols=[catCol + "_OHE"]
+    )
+    stages += [stringIndexer, encoder]
+
+assemblerScaler = VectorAssembler(inputCols=continuous_column, outputCol="feature_SS")
+stages += [assemblerScaler]
+
+standardizer = StandardScaler().setInputCol("feature_SS").setOutputCol("feature_SS2")
+stages += [standardizer]
+
+assemblerInputs = [oc + "_OHE" for oc in ohe_column] + [le_column + "_LE"] + ["feature_SS2"] + other_column
+assembler = VectorAssembler(inputCols=assemblerInputs, outputCol="features")
+
+stages += [assembler]
+
+#rf = RandomForestClassifier(featuresCol = 'features', labelCol = 'isFraud', numTrees=1000)
+rf = GBTClassifier(featuresCol = 'features', labelCol = 'isFraud', maxIter=100)
+
+stages += [rf]
+
+print(stages)
+```
 
 <p align="justify">
 On effectue l'entrainment du modèle, la prédiction sur la base d'entrainement pour avoir une idée de la pertinence et des performances de l'algorihtme puis nous sauvegardons notre modèle de machine learning.
 </p>
 
-<img src="./Pictures/capture18.png"/>
+```Python
+pipeline = Pipeline(stages = stages)
+model = pipeline.fit(train)
+predictions = model.transform(test)
+
+pred = predictions.selectExpr("cast(prediction as long) pred","isFraud")
+#display(pred)
+pred.printSchema()
+
+pandas_pred = pred.toPandas()
+
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+print(accuracy_score(pandas_pred['isFraud'], pandas_pred['pred']))
+
+print(confusion_matrix(pandas_pred['isFraud'], pandas_pred['pred']))
+
+model.save("https://datalakesparkproject.blob.core.windows.net/containerdatalakesparkproject/SparkModelFraudDetection")
+```
 
 <p align="justify">
 Notre modèle est maintenant entrainé et enregistré, nous pouvons l'inscrire dans un espace de travail Azure Machine Learning que l'on crée au préalable. L'utilisation d'Azure Machine Learning va simplifier le processus d'industrialisation de l'algorithme.
