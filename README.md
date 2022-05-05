@@ -40,6 +40,10 @@ La première partie de l'architecture sert à créer un historique de données p
 
 # 3. Développement du générateur
 
+<p align="justify">
+Pour construire le générateur de données, on choisit le pourcentage de transaction frauduleuse (10% ici) puis on va générer des valeurs aléatoires pour chaque variable en fonction de si la transaction est frauduleuse ou non. On ajoute du bruit et de la variabilité dans les données pour complexifier le travail du futur algorithme. Nous avons différentes variables comme le montant de la transaction, la balance sur le compte, les revenus, les crédits, le staut marital, le nombre d'enfant, le jour et le mois de la transaction, le type de transaction ou encore la méthode de paiement. Pour chaque transaction, on crée un dictionnaire Python contenant chacune des variables avec une valeur. On transformera par la ssuite ce dictionnaire en document JSON que l'on enverra vers l'architecture Azure. Voyon maintenant le développement de cette architecture.
+</p>
+
 # 4. Paramétrage des services Event Hub et Azure Stream Analytics puis liaison des services
 
 <p align="justify">
@@ -64,10 +68,14 @@ Nous avons maintenant une connexion effective entre nos services Event Hub et St
 <img src="./Pictures/capture5.png"/><img src="./Pictures/capture6.png"/>
 
 <p align="justify">
-Voyons maintenant commebnt envoyer les données vers le service Event Hub.
+Voyons maintenant comment envoyer les données vers le service Event Hub.
 </p>
 
 # 5. Envoie de données du générateur vers le service Event Hub
+
+<p align="justify">
+Nous souhaitons envoyer chacun des dictionnaires Python générés vers le service Event Hub sous la forme d'un document JSON. On va donc envoyer une requête POST vers le service Event Hub. Avant cela, nous devons sécurisé la connexion entre le générateur et le service Event Hub. Nous allons donc inscrire une application dans Azure Active Directory. Nous attibuons le rôle d'expéditeur de données à notre application AAD au sein d'Event Hub (onglet Contrôle d'accès IAM). Nous pouvons maintenant demander un token d'authentification auprès d'Azure Active Directory qui nous permettra dans un second temps d'envoyer des données à Event Hub de manière securisé et en étant authentifié. On fait donc un epremière requête pour recupérer le token AAD (il faut au préalable créer une clée secrète dans AAD) puis on peut envoyer les documents JSON vers le service Event Hub.
+</p>
 
 ```Python
 print(json_dict)
@@ -77,7 +85,7 @@ url = "https://login.microsoftonline.com/253bb4e8-8e40-4739-9b26-c2d5d2ea2d04/oa
     
 payload={'grant_type': 'client_credentials',
     'client_id': '16927c99-1ce9-460e-9c9c-e2b693a53315',
-    'client_secret': 'wGw7Q~A3syAI5sP2UKH5e-zd.nvmVC6GKLsVk',
+    'client_secret': '*************************************',
     'resource': 'https://eventhubs.azure.net'}
     
 headers = {
@@ -106,7 +114,7 @@ print("successfully transferred !!!")
 ```
 
 <p align="justify">
-Lorsque nous exécutons le générateur, il va envoyer des transactions vers le service Event Hub qui va les rediriger vers Azure Stream Analytics. Il faut maintenant définir une sortie pour notre service de streaming.
+La connexion est en place. Lorsque nous exécutons le générateur, il va envoyer des transactions vers le service Event Hub qui va les rediriger vers Azure Stream Analytics. Il faut maintenant définir une sortie pour notre service de streaming.
 </p>
 
 # 6. Mise en place d’une Azure Cosmos DB puis liaison avec Stream Analytics et Création d’un historique de données
@@ -138,12 +146,26 @@ Nous avons maintenant effectué la connexion entre le générateur et Cosmos DB 
 # 7. Développement de l’algorithme de ML avec Spark et enregistrement du modèle sous Azure ML
 
 <p align="justify">
-Nous pouvons maintenant créer notre modèle de Machine Learning visant à prédire si une transaction et frauduleuse ou non. Nous disposons de données labelisées dans Cosmos DB afin d'entrainer l'algorithme. Nous créons un service Azure Synapse Analytics permettant d'accéder à un environnement de travail Spark.
+Nous pouvons désormais créer notre modèle de Machine Learning visant à prédire si une transaction et frauduleuse ou non. Nous disposons de données labelisées dans Cosmos DB afin d'entrainer l'algorithme. Nous créons un service Azure Synapse Analytics permettant d'accéder à un environnement de travail Spark. Au sein d'Azure Synapse, nous créons un service lié avec Azure Cosmos DB pour avoir facilement l'accès aux données. Nous ouvrons un notebook sur le pool Spark et nous pouvons commencer le développement de l'algorihtme. On commence par importer les données et les afficher.
 </p>
 
 <img src="./Pictures/capture16.png"/>
+
+<p align="justify">
+Après avoir visualiser les données, on crée un pipeline pyspark contenant l'ensemble des étapes de processing des données et le modèle final. On applique un encodage one hot sur une partie des variable, un encodage de type label encoder sur une autre variable, une standardisation des variables continues et nous n'appliquons aucune transformation sur quelques une des variables. C'est un modèle de gradient boosting. On note que l'optimisation de l'algorithme n'est pas une étape primordiale de ce PoC puisque ce sont des données générées artificiellement.
+</p>
+
 <img src="./Pictures/capture17.png"/>
+
+<p align="justify">
+On effectue l'entrainment du modèle, la prédiction sur la base d'entrainement pour avoir une idée de la pertinence et des performances de l'algorihtme puis nous sauvegardons notre modèle de machine learning.
+</p>
+
 <img src="./Pictures/capture18.png"/>
+
+<p align="justify">
+Notre modèle est maintenant entrainé et enregistré, nous pouvons l'inscrire dans un espace de travail Azure Machine Learning que l'on crée au préalable. L'utilisation d'Azure Machine Learning va simplifier le processus d'industrialisation de l'algorithme.
+</p>
 
 # 8. Déploiement du modèle de ML dans un conteneur Azure Kubernetes
 
