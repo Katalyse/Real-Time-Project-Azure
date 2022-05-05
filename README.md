@@ -27,7 +27,7 @@ Voyons l’architecture mise en place pour répondre à ces problématiques :
 # 2. Architecture technique détaillée
 
 <p align="justify">
-Pour ce projet, nous disposons d’un générateur de données en local. Il est donc chargé de simuler des transactions bancaires et d’envoyer des requêtes contenant ces données vers le service Event Hub. Dans la première partie de cette architecture, on va construire un historique des transactions pour pouvoir créer un modèle de machine learning. Le service Event Hub capture les événements provenant du générateur. Les données sont labelisées dans cette partie de l'architecture (pour construire le modèle). Les données sont transmises vers le service Azure Stream Analytics qui redirige les données vers une base de données Azure Cosmos DB permettant de stocker des documents au format JSON. Une fois que l’on dispose de plusieurs dizaines de milliers d’enregistrement, on va pouvoir créer notre modèle de ML. On utilisera un environnement Spark sur Azure Synapse Analytics pour réaliser cette tâche. L’utilisation d’un cluster Spark permet de créer des algorithmes de ML à partir d’un grand volume de données de manière rapide. Une fois que le modèle est construit, il est enregistré dans Azure Machine Learning pour qu’il soit facilement déployable. On va créer un conteneur Azure Kubernetes pour héberger le modèle. Une fois que l’on dispose du modèle dans un conteneur, on peut mettre en place la deuxième partie de l’architecture qui va permettre le traitement des données en temps réel. 
+Pour ce projet, nous disposons d’un générateur de données en local. Il est donc chargé de simuler des transactions bancaires et d’envoyer des requêtes contenant ces données vers le service Event Hub. Dans la première partie de cette architecture, on va construire un historique des transactions pour pouvoir créer un modèle de machine learning. Le service Event Hub capture les événements provenant du générateur. Les données sont transmises vers le service Azure Stream Analytics qui redirige les données vers une base de données Azure Cosmos DB permettant de stocker des documents au format JSON. Une fois que l’on dispose de plusieurs dizaines de milliers d’enregistrement, on va pouvoir créer notre modèle de ML. On utilisera un environnement Spark sur Azure Synapse Analytics pour réaliser cette tâche. L’utilisation d’un cluster Spark permet de créer des algorithmes de ML à partir d’un grand volume de données de manière rapide. Une fois que le modèle est construit, il est enregistré dans Azure Machine Learning pour qu’il soit facilement déployable. On va créer un conteneur Azure Kubernetes pour héberger le modèle. Une fois que l’on dispose du modèle dans un conteneur, on peut mettre en place la deuxième partie de l’architecture qui va permettre le traitement des données en temps réel. 
 </p>
 
 <p align="justify">
@@ -35,46 +35,81 @@ Le générateur va envoyer un certain nombre de données vers le service Event H
 </p>
 
 <p align="justify">
-La première partie de l'architecture sert à créer un historique de données pour développer l'algorithme de ML. La deuxième est celle utilisée en condition réelle. Des données sont reçues aléatoirement dans le temps. Nous devons déterminer si ces données décrivent une transaction frauduleuse ou non. Il faut aussi stocker ces données pour les conserver et les restituer. Voyons maintenant étape par étape la construction de cette architecture.
+La première partie de l'architecture sert à créer un historique de données pour développer l'algorithme de ML. La deuxième est celle utilisée en condition réelle. Des données sont reçues aléatoirement dans le temps. Nous devons déterminer si ces données décrivent une transaction frauduleuse ou non. Il faut aussi stocker ces données pour les conserver et les restituer. Voyons maintenant étape par étape la construction de cette architecture. On note que toutes les ressources de ce projet se situent dans le même groupe de ressource sous Azure.
 </p>
 
-# 3. Paramétrage des services Event Hub et Azure Stream Analytics puis liaison des services
+# 3. Développement du générateur
 
-<img src="./Pictures/capture2.png"/>
+# 4. Paramétrage des services Event Hub et Azure Stream Analytics puis liaison des services
 
-<img src="./Pictures/capture1.png"/>
+<p align="justify">
+On commence par créer une ressource Event Hub puis un Event Hub au sein de la ressource. Il suffit d'attribuer un nom et un nombre de partitions. 
+</p>
+ 
+<img src="./Pictures/capture2.png"/>  
 
-<img src="./Pictures/capture4.png"/>
+<p align="justify">
+Il faut ensuite définir une stratégie d'accès partagé afin d'établir une connexion avec Azure Streaming Analytics. Pour cela, on se rend dans l'Event Hub que l'on vient de créer puis on ajoute une stratégie d'accès partagé en attribuant un nom et les autorisations "Gérer", "Envoyer" et "Ecouter". 
 
-<img src="./Pictures/capture5.png"/>
 
-<img src="./Pictures/capture6.png"/>
+<p align="justify">
+On crée ensuite une ressource Stream Analytics Job. Ce service consiste à définir trois éléments : l'entrée, la requête et la sortie. Il peut y avoir plusieurs entrées et sorties. L'entrée consiste à créer une connexion avec un service qui va envoyer les données. La sortie permet de définir les ressources qui vont recevoir les données. La requête permet de modifier, de transformer ou d'agréger les données. Nous disposons de données provenant d'un Event Hub, il faut donc définir cette ressource comme entrée de notre service Azure Streaming Analytics.   
+</p>
 
-<img src="./Pictures/capture3.png"/>
+<p align="justify">
+Pour cela, on ajoute une entrée de flux de type Event Hub dans l'onglet "Entrées". On définit ensuite un alias puis on cherche la ressource Event Hub que l'on vient de créer. On ajoute aussi la stratégie d'Event Hub que l'on a crée ci-dessous et qui se nomme "mypolicy". On précise la forme de stockage des données (JSON dans mon cas).
+Nous avons maintenant une connexion effective entre nos services Event Hub et Stream Analytics.   
+</p>
 
-# 4. Développement du générateur et envoie de données du générateur vers le service Event Hub
+<img src="./Pictures/capture5.png"/><img src="./Pictures/capture6.png"/>
 
-# 5. Mise en place d’une Azure Cosmos DB puis liaison avec Stream Analytics et Création d’un historique de données
+<p align="justify">
+Voyons maintenant commebnt envoyer les données vers le service Event Hub.
+</p>
+
+# 5. Envoie de données du générateur vers le service Event Hub
+
+<p align="justify">
+Lorsque nous exécutons le générateur, il va envoyer des transactions vers le service Event Hub qui va les rediriger vers Azure Stream Analytics. Il faut maintenant définir une sortie pour notre service de streaming.
+</p>
+
+# 6. Mise en place d’une Azure Cosmos DB puis liaison avec Stream Analytics et Création d’un historique de données
+
+<p align="justify">
+Nous utiliserons Azure Cosmos DB qui permet de stocker des données de type document en JSON. D'autres solutions de stockage sont possibles. On crée un service Azure Cosmos DB avec l'API core (SQL). On crée ensuite un conteneur.
+</p>
 
 <img src="./Pictures/capture12.png"/>
 
-<img src="./Pictures/capture8.png"/>
+<p align="justify">
+Etablissons la connexion entre Azure Cosmos DB et Azure Stream Analytics. Pour cela, on retourne au niveau du service de streaming dans l'onglet "Sorties". On ajoute une sortie de type Comos DB. On précise la base de données et le conteneur que l'on vient de créer.
+</p>
 
 <img src="./Pictures/capture9.png"/>
 
-<img src="./Pictures/capture7.png"/>
+<p align="justify">
+Nous avons désormais notre entrée et notre sortie pour le service Azure Stream Analytics, il suffit de terminer par l'écriture de la requête. Ici, nous n'avons pas besoin de transformer les données, nous pouvons les envoyer directement vers Azure Comos DB puisqu'elles sont dans le bon format. Nous utilisaons la requête la plus simple possible consistant à prendre toutes les données de l'entrée et les envoyer vers la sortie.
+</p>
 
 <img src="./Pictures/capture11.png"/>
 
+<p align="justify">
+Nous avons maintenant effectué la connexion entre le générateur et Cosmos DB en passant par Event Hub et Azure Streaming Analytics. Il est possible d'envoyer directement les données du générateur vers Cosmos DB. Cependant, nous allons réutiliser l'architecture Event Hub / Streaming Analytics dans la suite et nous verrons en quoi c'est utile et pertinent pour obtenir une architecture scalable et performante. Nous envoyons des dizaines de milliers de transactions du générateur vers Comos DB et nous pouvons voir ci-dessous que les données arrivent bien jusqu'à notre base de données Cosmos DB.
+</p>
+
 <img src="./Pictures/capture13.png"/>
 
-# 6. Développement de l’algorithme de ML avec Spark et enregistrement du modèle sous Azure ML
+# 7. Développement de l’algorithme de ML avec Spark et enregistrement du modèle sous Azure ML
+
+<p align="justify">
+Nous pouvons maintenant créer notre modèle de Machine Learning visant à prédire si une transaction et frauduleuse ou non. Nous disposons de données labelisées dans Cosmos DB afin d'entrainer l'algorithme. Nous créons un service Azure Synapse Analytics permettant d'accéder à un environnement de travail Spark.
+</p>
 
 <img src="./Pictures/capture16.png"/>
 <img src="./Pictures/capture17.png"/>
 <img src="./Pictures/capture18.png"/>
 
-# 7. Déploiement du modèle de ML dans un conteneur Azure Kubernetes
+# 8. Déploiement du modèle de ML dans un conteneur Azure Kubernetes
 
 <p align="justify">
 L'objectif des parties 7 et 8 est de mettre en place une fonctionnalité puissante d’Azure Stream Analytics : le scoring d’algorithmes de Machine Learning. En effet, dans des scénarios avancés d’analyse en temps réel, il est parfois nécessaire de faire appel à un algorithme de machine learning pour scorer des nouvelles données de manière rapide. Azure Stream Analytics est un service qui permet d’ingérer des données en temps réel à partir d’événèments, de transformer ces données et de les rediriger vers une sortie pour du stockage par exemple. L’avantage majeure qu’offre le service Azure Stream Analytics et que l’on peut scorer les données pendant le processus de transformation. Ceci implique que l’on peut scorer des données avant qu’elles soient stockées, ce qui améliore grandement la vitesse de traitement des données et convient donc parfaitement à un scénario d’analyse en temps réel.
@@ -142,7 +177,9 @@ Notre conteneur AKS parvient à scorer correctement les données. Maintenant qu�
 #...
 ```
 
-# 8. Mise en place d’un Event Hub / Azure Stream Analytics / Azure Cosmos DB pour l’architecture finale en temps réel
+# 9. Mise en place d’un Event Hub / Azure Stream Analytics / Azure Cosmos DB pour l’architecture finale en temps réel
+
+<img src="./Pictures/capture7.png"/>
 
 <img src="./Pictures/capture10.png"/>
 
@@ -173,5 +210,5 @@ La fonctionnalité de scoring d’un algorithme de Machine Learning au sein d’
 Notons que les types que nous avons utilisés en entrée et en sortie ne sont pas les seuls. Nous pouvons par exemple transmettre un Dataframe Spark directement en entrée de la fonction run(). Pour cela, il suffit de changer l’exemple de l’input dans le script de scoring. La requête SQL reste inchangée. Nous pouvons aussi récupérer un array numpy en entrée du script. Il faut pour cela changer l’input dans le script de scoring et passer par une fonction UDF javascript au niveau de la requête SQL. Nous avons un exemple disponible à la fin de la page suivante : Intégration d’Azure Stream Analytics avec Azure Machine Learning | Microsoft Docs. Le Dataframe et l’Array sont les deux types les plus couramment utilisés pour transmettre les données depuis Azure Stream Analytics vers le conteneur AKS hébergeant notre modèle. Nous pouvons aussi utiliser un conteneur ACI.
 </p>
 
-# 9. Création et intégration des deux dashboards Power BI
+# 10. Création et intégration des deux dashboards Power BI
 
