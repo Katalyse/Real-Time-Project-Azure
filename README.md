@@ -69,6 +69,42 @@ Voyons maintenant commebnt envoyer les données vers le service Event Hub.
 
 # 5. Envoie de données du générateur vers le service Event Hub
 
+```Python
+print(json_dict)
+    
+#Obtain AAD Token
+url = "https://login.microsoftonline.com/253bb4e8-8e40-4739-9b26-c2d5d2ea2d04/oauth2/token"
+    
+payload={'grant_type': 'client_credentials',
+    'client_id': '16927c99-1ce9-460e-9c9c-e2b693a53315',
+    'client_secret': 'wGw7Q~A3syAI5sP2UKH5e-zd.nvmVC6GKLsVk',
+    'resource': 'https://eventhubs.azure.net'}
+    
+headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Cookie': 'fpc=AtYw0mDu1vlPg3bhIy1YMobw1pLaAQAAAKONstkOAAAA; stsservicecookie=estsfd; x-ms-gateway-slice=estsfd'
+}
+    
+response = requests.request("GET", url, headers=headers, data=payload)
+    
+access_token = json.loads(response.text)["access_token"]
+    
+#hub = "eventhubspark"
+hub = "realtimefdhub" 
+    
+#Send data to event hub
+url = "https://ProjectSparkEventHub.servicebus.windows.net/" + hub + "/messages?partitionId=1"
+    
+headers = {
+      'Content-Type': 'application/atom+xml;type=entry;charset=utf-8',
+      'Authorization': 'Bearer' + ' ' + access_token
+}
+    
+response = requests.request("POST", url, headers=headers, data=str(json_dict))
+
+print("successfully transferred !!!")
+```
+
 <p align="justify">
 Lorsque nous exécutons le générateur, il va envoyer des transactions vers le service Event Hub qui va les rediriger vers Azure Stream Analytics. Il faut maintenant définir une sortie pour notre service de streaming.
 </p>
