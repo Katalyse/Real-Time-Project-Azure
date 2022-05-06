@@ -378,12 +378,12 @@ Notre conteneur AKS parvient à scorer correctement les données. Maintenant qu�
 
 # 9. Mise en place d’un Event Hub / Azure Stream Analytics / Azure Cosmos DB pour l’architecture finale en temps réel
 
+Nous souaitons mettre en place la partie real time de l'architecture. Nous disposons déjà de notre conteneur AKS hébergeant le modèle de Machine Learning. Il suffit de reprendre les étapes 4, 5 et 6 présentés ci-dessus pour mettre en place les services Event Hub, Streaming Analytics et Cosmos DB. On peut aussi réutiliser directement ces services en modifiant quelques points. Il faut connecter ces services entre eux. Nous avons désormais notre générateur qui envoie des données à prédire vers le service Event Hub qui les redirige vers le service Azure Streaming Analytics. Ce service va scorer les données puis les envoyer vers le service Comos DB et vers Power BI. Pour cela, il faut disposer d'un espace de travail Power BI puis l'ajouter en tant que sortie du job de streaming.
+
 <img src="./Pictures/capture7.png"/>
 
-<img src="./Pictures/capture10.png"/>
-
 <p align="justify">
-Au niveau du service Azure Stream Analytics, on crée une nouvelle fonction de type Azure ML Service. On choisit un nom pour cette nouvelle fonction et on précise l’espace de travail Azure ML avec lequel on a déployé notre conteneur AKS. Azure Stream va automatiquement trouver les points de terminaison disponible et va générer la signature de fonction de manière automatique grâce aux exemples fournis dans le script de scroing. On peut ensuite enregistrer la fonction.
+Mettons maintenant en place l'appel du conteneur et l'envoie des résultats vers Power BI et Cosmos DB. Au niveau du service Azure Stream Analytics, on crée une nouvelle fonction de type Azure ML Service. On choisit un nom pour cette nouvelle fonction et on précise l’espace de travail Azure ML avec lequel on a déployé notre conteneur AKS. Azure Stream va automatiquement trouver les points de terminaison disponible et va générer la signature de fonction de manière automatique grâce aux exemples fournis dans le script de scroing. On peut ensuite enregistrer la fonction.
 </p>
 
 <img src="./Pictures/Image1.png" alt="drawing" width="380" height="650"/>
@@ -396,7 +396,7 @@ Voici notre fonction prédiction. Il ne manque plus qu’à utiliser cette fonct
 <img src="./Pictures/capture14.png"/>
 
 <p align="justify">
-Les données à scorer proviennnent du service Event Hub et nous voulons envoyer les données scorées vers un service Power BI en temps réel et un stockage Azure Cosmos DB. Dans la première partie de cette requête nous créons une variable nommée Dataframe à partir de la source de données en entrée. Ce dataframe contient exactement les mêmes colonnes avec les mêmes noms et le même ordre que l’exemple que nous avons spécifié dans le script de scoring. Dans la suite, nous appelons la fonction prédiction en transmettant le Dataframe en paramètre de cette fonction. Nous redirigeons les résultats vers nos deux sorties.
+Dans la première partie de cette requête nous créons une variable nommée Dataframe à partir de la source de données en entrée. Ce dataframe contient exactement les mêmes colonnes avec les mêmes noms et le même ordre que l’exemple que nous avons spécifié dans le script de scoring. Dans la suite, nous appelons la fonction prédiction en transmettant le Dataframe en paramètre de cette fonction. Nous redirigeons les résultats vers nos deux sorties.
 </p>
 
 <img src="./Pictures/capture15.png"/>
