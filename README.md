@@ -11,7 +11,7 @@
 - [Déploiement du modèle de ML dans un conteneur Azure Kubernetes](https://github.com/Katalyse/Real-Time-Project-Azure#8-d%C3%A9ploiement-du-mod%C3%A8le-de-ml-dans-un-conteneur-azure-kubernetes)
 - [Mise en place d’un Event Hub / Azure Stream Analytics / Azure Cosmos DB pour l’architecture finale en temps réel](https://github.com/Katalyse/Real-Time-Project-Azure#9-mise-en-place-dun-event-hub--azure-stream-analytics--azure-cosmos-db-pour-larchitecture-finale-en-temps-r%C3%A9el)
 - [Création et intégration des deux dashboards Power BI](https://github.com/Katalyse/Real-Time-Project-Azure#10-cr%C3%A9ation-et-int%C3%A9gration-des-deux-dashboards-power-bi)
-
+- [Conclusion du PoC](https://github.com/Katalyse/Real-Time-Project-Azure/blob/main/README.md#11-conclusion-du-poc)
 
 # 1. Introduction à l'architecture et approche globale
 
@@ -412,20 +412,23 @@ Notons que les types que nous avons utilisés en entrée et en sortie ne sont pa
 # 10. Création et intégration des deux dashboards Power BI
 
 <p align="justify">
+La dernière étape consiste à créer un rapport et un tableau de bord Power BI. Le premier est un tableau de bord en temps réel présentant les données provenant directement de Azure Streaming Analytics. Le deuxième est un rapport de l'évolution de l'historique des fraudes suivant différentes métriques. Les données proviennent d'Azure Cosmos DB. Lorsque nous envoyons des données depuis Streaming Analytics, elles sont stockées dans un jeu de données en temps réel dans un espace de travail Power BI.
 </p>
 
 <img src="./Pictures/capture20.png"/>
 
 <p align="justify">
+Il suffit de créer un tableau de bord spécifique à un cas d'utilisation en temps réel. On crée aussi un deuxième dataset contenant les données en provenance de Cosmos DB pour le deuxième rapport.
 </p>
 
 <img src="./Pictures/capture19.png"/>
 
 <p align="justify">
+Ce rapport rescence par exemple les jours de la semaine ou les mois de l'année où il y a eu le plus de fraudes.
 </p>
 
 # 11. Conclusion du PoC
 
 <p align="justify">
-
+L'élément central de ce PoC était l'utilisation de la fonctionnalité PREDICT() du service Azure Streaming Analytics. Cette puissante fonctionnalité permet d'analyser et de predire en temps réel de nouvelles données. Pour cela, nous avons créer un conteneur AKS hebergeant un modèle de ML créé à partir de Synapse et déployé à partir d'Azure ML. Le reste de l'architecture utilise un générateur en Python, Event Hub, Cosmos DB et Power BI qui sont des outils efficaces pour traiter des scénarios de traitement, d'analyse et de stockage en temps réel des données.
 </p>
