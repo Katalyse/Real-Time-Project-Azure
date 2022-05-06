@@ -411,3 +411,21 @@ Notons que les types que nous avons utilisés en entrée et en sortie ne sont pa
 
 # 10. Création et intégration des deux dashboards Power BI
 
+<p align="justify">
+</p>
+
+<img src="./Pictures/capture20.png"/>
+
+<p align="justify">
+</p>
+
+<img src="./Pictures/capture19.png"/>
+
+<p align="justify">
+</p>
+
+# 11. Conclusion du PoC
+
+<p align="justify">
+
+</p>
